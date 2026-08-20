@@ -371,12 +371,13 @@ function showResults(){
   box.classList.remove("hidden");
 }
 
-document.getElementById("qualYes").onclick=()=>{
-  continentIndex=0;
+document.getElementById("qualYes").addEventListener("click", function(){
+  continentIndex = 0;
   document.getElementById("qualNotice").classList.add("hidden");
-  show("continent");
+  screens.qualification.classList.add("hidden");
+  screens.continent.classList.remove("hidden");
   renderContinent();
-};
+});
 
 document.getElementById("qualNo").onclick=()=>{
   const n=document.getElementById("qualNotice");
