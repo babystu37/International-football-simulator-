@@ -1,460 +1,412 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>International Football Simulator</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;background:#071426;color:#fff}
-.screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px}
+body{margin:0;background:#071426;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif}
+.screen{min-height:100vh;padding:28px;display:flex;justify-content:center;align-items:center}
 .hidden{display:none!important}
-.loading{background:radial-gradient(circle at 15% 15%,#1264d6 0,transparent 32%),radial-gradient(circle at 85% 20%,#21c7d9 0,transparent 28%),radial-gradient(circle at 50% 100%,#16865d 0,transparent 35%),#071426;text-align:center}
 .content{width:min(720px,100%)}
-.logo{width:110px;height:110px;margin:0 auto 28px;border-radius:32px;display:grid;place-items:center;font-size:52px;background:linear-gradient(145deg,#21c7d9,#1264d6 55%,#123b8f);box-shadow:0 18px 45px #0007}
+.loading{background:radial-gradient(circle at 15% 15%,#1264d6,transparent 32%),radial-gradient(circle at 85% 20%,#21c7d9,transparent 28%),radial-gradient(circle at 50% 100%,#16865d,transparent 35%),#071426;text-align:center}
+.logo{width:110px;height:110px;margin:0 auto 28px;border-radius:30px;display:grid;place-items:center;font-size:52px;background:linear-gradient(145deg,#21c7d9,#1264d6 55%,#123b8f);box-shadow:0 18px 45px #0007}
 h1{font-size:clamp(28px,7vw,48px);margin:0 0 10px;letter-spacing:-1.5px}
+h2{font-size:clamp(30px,6vw,44px);margin:8px 0}
+h3{margin:0}
 .subtitle,.description,.muted{color:#a9bdd4}
-.subtitle{font-size:16px}
+.description{line-height:1.5}
+.eyebrow{color:#21c7d9;font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
 .progress{height:8px;max-width:360px;margin:28px auto 14px;background:#ffffff22;border-radius:20px;overflow:hidden}
-.progressBar{height:100%;width:0;background:linear-gradient(90deg,#21c7d9,#25c47a);transition:width .25s}
-.start{margin-top:22px;padding:15px 48px;border:0;border-radius:16px;background:#fff;color:#071426;font-size:17px;font-weight:750}
+.progressBar{height:100%;width:0;background:linear-gradient(90deg,#21c7d9,#25c47a)}
+.start{margin-top:22px;padding:15px 48px;border:0;border-radius:16px;background:#fff;color:#071426;font-size:17px;font-weight:800}
 .start:disabled{opacity:0;pointer-events:none}
 .hub,.format,.qualification,.continent{align-items:flex-start;background:linear-gradient(180deg,#08182d,#071426)}
-.hub .content,.format .content,.qualification .content,.continent .content{padding-top:6vh}
-.eyebrow{color:#21c7d9;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
-h2{font-size:clamp(30px,6vw,44px);margin:8px 0}
-.description{line-height:1.5}
+.hub .content,.format .content,.qualification .content,.continent .content{padding-top:5vh}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:30px}
-.choice{min-height:170px;border:1px solid #ffffff18;border-radius:24px;background:linear-gradient(145deg,#122945,#0d1d32);color:#fff;padding:24px;text-align:left}
-.icon{font-size:34px}.title{font-size:21px;font-weight:750;margin-top:18px}.desc{color:#a9bdd4;font-size:14px;margin-top:7px;line-height:1.45}
-.formatOption,.continentButton{display:block;width:100%;margin-top:14px;padding:20px;border:1px solid #ffffff18;border-radius:20px;background:#10223b;color:#fff;text-align:left}
-.formatTitle{font-size:18px;font-weight:700}.formatDesc{color:#a9bdd4;margin-top:5px;font-size:14px;line-height:1.45}
-.question{margin-top:30px;padding:24px;border:1px solid #ffffff18;border-radius:24px;background:#10223b}
-.question h3{font-size:22px;margin:0 0 8px}
+.choice,.formatOption,.continentButton{border:1px solid #ffffff18;border-radius:22px;background:#10223b;color:#fff}
+.choice{min-height:155px;padding:22px;text-align:left}
+.icon{font-size:34px}.title{font-size:21px;font-weight:800;margin-top:16px}.desc,.formatDesc{color:#a9bdd4;font-size:14px;margin-top:6px;line-height:1.45}
+.formatOption,.continentButton{display:block;width:100%;margin-top:14px;padding:20px;text-align:left}
+.formatTitle{font-size:18px;font-weight:800}
+.question,.drawCard,.simPanel{margin-top:22px;padding:22px;border:1px solid #ffffff18;border-radius:24px;background:#10223b}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
-.answer{padding:15px;border:0;border-radius:15px;font-weight:750}
-.yes{background:#25c47a;color:#061b12}.no{background:#fff;color:#071426}
-.back{margin-top:24px;padding:11px 18px;border:1px solid #ffffff22;border-radius:12px;background:transparent;color:#fff}
-.notice{margin-top:20px;padding:14px 16px;border-radius:16px;background:#21c7d912;border:1px solid #21c7d933;color:#a9bdd4;line-height:1.45}
-.order{margin-top:28px;display:flex;gap:8px;flex-wrap:wrap}
+.answer,.simulate{padding:14px 18px;border:0;border-radius:14px;font-weight:800}
+.yes,.simulate{background:#25c47a;color:#061b12}.no{background:#fff;color:#071426}
+.back{margin-top:22px;padding:11px 18px;border:1px solid #ffffff22;border-radius:12px;background:transparent;color:#fff}
+.notice{margin-top:18px;padding:14px 16px;border-radius:16px;background:#21c7d912;border:1px solid #21c7d933;color:#a9bdd4;line-height:1.45}
+.order{margin-top:22px;display:flex;gap:7px;flex-wrap:wrap}
 .order span{padding:7px 10px;border-radius:999px;background:#ffffff0d;border:1px solid #ffffff12;color:#a9bdd4;font-size:12px}
 .order .active{background:#21c7d91c;color:#fff;border-color:#21c7d966}
-.drawCard{margin-top:26px;padding:24px;border:1px solid #ffffff18;border-radius:24px;background:#10223b}
-.drawCard h3{margin:0 0 8px;font-size:23px}
-.route{margin-top:16px;padding:16px;border-radius:16px;background:#071426;border:1px solid #ffffff10}
+.route{margin-top:14px;padding:16px;border-radius:16px;background:#071426;border:1px solid #ffffff10}
 .route strong{display:block;margin-bottom:5px}
 .route p{margin:0;color:#a9bdd4;font-size:14px;line-height:1.5}
-.continentButton{cursor:pointer}
-.continentButton strong{font-size:18px}
-.continentButton small{display:block;color:#a9bdd4;margin-top:5px}
- .simPanel{margin-top:22px;padding:22px;border:1px solid #ffffff18;border-radius:24px;background:#10223b}
-.simHeader{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.simHeader h3{margin:0;font-size:21px}
-.simControls{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:16px}
-.simControls select{width:100%;padding:13px 14px;border-radius:13px;border:1px solid #ffffff22;background:#071426;color:#fff;font-size:16px}
-.simulate{padding:13px 18px;border:0;border-radius:13px;background:#25c47a;color:#061b12;font-weight:800}
-.simulate:disabled{opacity:.5}
-.standings{width:100%;margin-top:18px;border-collapse:collapse;font-size:13px}
-.standings th,.standings td{padding:9px 6px;border-bottom:1px solid #ffffff10;text-align:center}
+.simHeader{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.simControls{display:flex;justify-content:space-between;align-items:end;gap:14px;margin-top:18px}
+.groupBadge{display:inline-block;margin-top:6px;padding:9px 13px;border-radius:12px;background:#21c7d91c;border:1px solid #21c7d955;font-weight:800}
+.simStatus{margin-top:12px;color:#21c7d9;min-height:20px;font-size:13px}
+.standings{width:100%;border-collapse:collapse;margin-top:16px;font-size:13px}
+.standings th,.standings td{padding:9px 5px;border-bottom:1px solid #ffffff10;text-align:center}
 .standings th:first-child,.standings td:first-child{text-align:left}
-.standings th{color:#a9bdd4;font-weight:600}
-.matchLog{margin-top:16px;max-height:180px;overflow:auto}
-.match{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #ffffff10;color:#c7d5e5}
-.simStatus{margin-top:12px;color:#21c7d9;font-size:13px;min-height:20px}
-@media(max-width:600px){.grid{grid-template-columns:1fr}.choice{min-height:130px}.hub .content,.format .content,.qualification .content,.continent .content{padding-top:4vh}.actions{grid-template-columns:1fr}.simControls{grid-template-columns:1fr}.standings{font-size:12px}}
+.standings th{color:#a9bdd4}
+.matchLog{margin-top:14px;max-height:230px;overflow:auto}
+.match{padding:9px 0;border-bottom:1px solid #ffffff10;display:flex;justify-content:space-between;gap:10px}
+.resultsBox{margin-top:18px;padding-top:16px;border-top:1px solid #ffffff12}
+.resultsRow{padding:10px 0;border-bottom:1px solid #ffffff10}
+@media(max-width:600px){
+ .grid{grid-template-columns:1fr}.actions{grid-template-columns:1fr}
+ .simControls{align-items:stretch;flex-direction:column}
+ .simControls .buttons{display:grid;grid-template-columns:1fr 1fr}
+ .standings{font-size:12px}
+}
 </style>
 </head>
 <body>
 
 <section id="loading" class="screen loading">
-<div class="content">
-<div class="logo">⚽</div>
-<h1>International Football Simulator</h1>
-<p id="status" class="subtitle">Preparing the football world…</p>
-<div class="progress"><div id="progressBar" class="progressBar"></div></div>
-<button id="startButton" class="start" disabled>Start</button>
-</div>
+  <div class="content">
+    <div class="logo">⚽</div>
+    <h1>International Football Simulator</h1>
+    <p id="status" class="subtitle">Preparing the football world…</p>
+    <div class="progress"><div id="progressBar" class="progressBar"></div></div>
+    <button id="startButton" class="start" disabled>Start</button>
+  </div>
 </section>
 
 <section id="hub" class="screen hub hidden">
-<div class="content">
-<div class="eyebrow">Create a tournament</div>
-<h2>What do you want to play?</h2>
-<p class="description">Choose the type of international competition you want to create.</p>
-<div class="grid">
-<button class="choice" id="worldCup"><div class="icon">🏆</div><div class="title">World Cup</div><div class="desc">Create a World Cup and configure its qualification system.</div></button>
-<button class="choice"><div class="icon">🌍</div><div class="title">Continental</div><div class="desc">Create a continental international competition.</div></button>
-<button class="choice"><div class="icon">📊</div><div class="title">Leagues</div><div class="desc">Create a league competition.</div></button>
-<button class="choice"><div class="icon">⚔️</div><div class="title">Single Elimination</div><div class="desc">Create a knockout tournament.</div></button>
-</div>
-</div>
+  <div class="content">
+    <div class="eyebrow">Create a tournament</div>
+    <h2>What do you want to play?</h2>
+    <p class="description">Choose the type of international competition you want to create.</p>
+    <div class="grid">
+      <button class="choice" id="worldCup"><div class="icon">🏆</div><div class="title">World Cup</div><div class="desc">Create a World Cup and configure its qualification.</div></button>
+      <button class="choice"><div class="icon">🌍</div><div class="title">Continental</div><div class="desc">Create a continental competition.</div></button>
+      <button class="choice"><div class="icon">📊</div><div class="title">Leagues</div><div class="desc">Create a league competition.</div></button>
+      <button class="choice"><div class="icon">⚔️</div><div class="title">Single Elimination</div><div class="desc">Create a knockout tournament.</div></button>
+    </div>
+  </div>
 </section>
 
 <section id="format" class="screen format hidden">
-<div class="content">
-<div class="eyebrow">World Cup</div>
-<h2>Choose the format</h2>
-<p class="description">Decide how you want your World Cup to be structured.</p>
-<button id="standardFormat" class="formatOption"><div class="formatTitle">Standard Format</div><div class="formatDesc">Use the game's standard World Cup structure.</div></button>
-<button class="formatOption"><div class="formatTitle">Custom Format</div><div class="formatDesc">Build the number of teams, groups and knockout stages yourself.</div></button>
-<button class="formatOption"><div class="formatTitle">Custom + Qualification</div><div class="formatDesc">Build the World Cup and create completely independent qualification routes for each confederation.</div></button>
-<button id="formatBack" class="back">← Back</button>
-</div>
+  <div class="content">
+    <div class="eyebrow">World Cup</div>
+    <h2>Choose the format</h2>
+    <p class="description">Decide how you want your World Cup to be structured.</p>
+    <button id="standardFormat" class="formatOption"><div class="formatTitle">Standard Format</div><div class="formatDesc">Use the standard World Cup structure.</div></button>
+    <button class="formatOption"><div class="formatTitle">Custom Format</div><div class="formatDesc">Build the World Cup structure yourself.</div></button>
+    <button class="formatOption"><div class="formatTitle">Custom + Qualification</div><div class="formatDesc">Build independent qualification routes for every confederation.</div></button>
+    <button id="formatBack" class="back">← Back</button>
+  </div>
 </section>
 
 <section id="qualification" class="screen qualification hidden">
-<div class="content">
-<div class="eyebrow">Standard World Cup Format</div>
-<h2>Qualification</h2>
-<p class="description">Would you like to use the standardised qualifying format?</p>
-<div class="question">
-<h3>Use standardised qualification?</h3>
-<p class="description">Yes uses the 2026-style qualifying structure for each confederation, with the North American route adjusted to include Canada, Mexico and the United States.</p>
-<div class="actions">
-<button id="qualYes" class="answer yes">Yes</button>
-<button id="qualNo" class="answer no">No</button>
-</div>
-<div id="qualNotice" class="notice hidden"></div>
-</div>
-<button id="qualBack" class="back">← Back</button>
-</div>
+  <div class="content">
+    <div class="eyebrow">Standard World Cup Format</div>
+    <h2>Qualification</h2>
+    <p class="description">Would you like to use the standardised qualifying format?</p>
+    <div class="question">
+      <h3>Use standardised qualification?</h3>
+      <p class="description">The qualifying draws will run in confederation order, starting with Africa.</p>
+      <div class="actions">
+        <button id="qualYes" class="answer yes">Yes</button>
+        <button id="qualNo" class="answer no">No</button>
+      </div>
+      <div id="qualNotice" class="notice hidden"></div>
+    </div>
+    <button id="qualBack" class="back">← Back</button>
+  </div>
 </section>
 
 <section id="continent" class="screen continent hidden">
-<div class="content">
-<div class="eyebrow">Standardised Qualification</div>
-<h2 id="continentTitle">Africa</h2>
-<p id="continentIntro" class="description">The qualifying draw will begin here.</p>
+  <div class="content">
+    <div class="eyebrow">Standardised Qualification</div>
+    <h2 id="continentTitle">Africa</h2>
+    <p id="continentIntro" class="description"></p>
+    <div id="order" class="order"></div>
 
-<div class="order" id="order"></div>
+    <div class="drawCard">
+      <h3 id="drawHeading">Africa Qualifying Draw</h3>
+      <div id="route"></div>
 
-<div class="drawCard">
-<h3 id="drawHeading">Africa Qualifying Draw</h3>
-<div id="route"></div>
+      <div class="simPanel">
+        <div class="simHeader">
+          <h3>Group Simulation</h3>
+          <span class="eyebrow">In order</span>
+        </div>
+        <p class="description">Groups are played from Group A onwards. Each press of <strong>Simulate</strong> plays the next match. When a group is complete, the next press starts the next group.</p>
 
-<div class="simPanel">
-  <div class="simHeader">
-    <h3>Group Simulation</h3>
-    <span class="eyebrow">Live standings</span>
-  </div>
-  <p class="description">Choose a group and press <strong>Simulate</strong>. Matches are played one at a time and the table updates after every game.</p>
-  <div class="simControls">
-    <div>
-      <span class="muted" style="display:block;margin-bottom:6px;font-size:13px">Current group</span>
-      <div id="currentGroup" class="viz-badge">Group A</div>
+        <div class="simControls">
+          <div>
+            <div class="muted" style="font-size:13px">Current group</div>
+            <div id="currentGroup" class="groupBadge">Group A</div>
+          </div>
+          <div class="buttons" style="display:flex;gap:10px">
+            <button id="simulateButton" class="simulate">Simulate</button>
+            <button id="resultsButton" class="simulate">Results</button>
+          </div>
+        </div>
+
+        <div id="simStatus" class="simStatus"></div>
+
+        <table class="standings">
+          <thead><tr><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>Pts</th></tr></thead>
+          <tbody id="standingsBody"></tbody>
+        </table>
+
+        <div id="resultsBox" class="resultsBox hidden">
+          <div class="simHeader"><h3>Results</h3><button id="closeResults" class="answer no">Close</button></div>
+          <div id="resultsList" class="matchLog"></div>
+        </div>
+      </div>
+
+      <button id="continueContinent" class="continentButton"><strong>Continue to next confederation</strong><small id="nextLabel">Asia</small></button>
     </div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button id="simulateButton" class="simulate" type="button">Simulate</button>
-      <button id="resultsButton" class="simulate" type="button">Results</button>
-    </div>
-  </div>
-  <div id="simStatus" class="simStatus" aria-live="polite"></div>
-  <table class="standings" aria-label="Group standings">
-    <thead>
-      <tr><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>Pts</th></tr>
-    </thead>
-    <tbody id="standingsBody"></tbody>
-  </table>
-  <div id="matchLog" class="matchLog" aria-live="polite"></div>
-  <div id="resultsPanel" class="simPanel" hidden style="margin-top:16px;padding:16px">
-    <div class="simHeader">
-      <h3>Results</h3>
-      <button id="closeResults" class="simulate" type="button">Close</button>
-    </div>
-    <div id="resultsList" class="matchLog" aria-live="polite"></div>
-  </div>
-</div>
 
-<button id="continueContinent" class="continentButton"><strong>Continue to next confederation</strong><small id="nextLabel">Asia</small></button>
-</div>
-
-<button id="continentBack" class="back">← Back</button>
-</div>
+    <button id="continentBack" class="back">← Back</button>
+  </div>
 </section>
 
 <script>
-const screens={loading:document.getElementById("loading"),hub:document.getElementById("hub"),format:document.getElementById("format"),qualification:document.getElementById("qualification"),continent:document.getElementById("continent")};
-const progressBar=document.getElementById("progressBar"),status=document.getElementById("status"),startButton=document.getElementById("startButton");
-let progress=0;
-
-const messages=["Preparing the football world…","Loading countries and flags…","Loading confederations…","Preparing tournament engine…","Ready to start."];
-const timer=setInterval(()=>{
- progress+=20; progressBar.style.width=progress+"%"; status.textContent=messages[Math.min(progress/20,4)];
- if(progress>=100){clearInterval(timer);startButton.disabled=false;}
-},350);
+const screens = {
+  loading:document.getElementById("loading"),
+  hub:document.getElementById("hub"),
+  format:document.getElementById("format"),
+  qualification:document.getElementById("qualification"),
+  continent:document.getElementById("continent")
+};
 
 function show(name){
- Object.values(screens).forEach(s=>s.classList.add("hidden"));
- screens[name].classList.remove("hidden");
+  Object.values(screens).forEach(s=>s.classList.add("hidden"));
+  screens[name].classList.remove("hidden");
 }
+
+const status = document.getElementById("status");
+const progressBar = document.getElementById("progressBar");
+const startButton = document.getElementById("startButton");
+let progress = 0;
+const messages = [
+  "Preparing the football world…",
+  "Loading countries and flags…",
+  "Loading confederations…",
+  "Preparing tournament engine…",
+  "Ready to start."
+];
+
+const loadingTimer = setInterval(()=>{
+  progress += 20;
+  progressBar.style.width = progress + "%";
+  status.textContent = messages[Math.min(progress/20,4)];
+  if(progress>=100){
+    clearInterval(loadingTimer);
+    startButton.disabled = false;
+  }
+},300);
 
 startButton.onclick=()=>show("hub");
 document.getElementById("worldCup").onclick=()=>show("format");
 document.getElementById("standardFormat").onclick=()=>show("qualification");
 document.getElementById("formatBack").onclick=()=>show("hub");
 document.getElementById("qualBack").onclick=()=>show("format");
+document.getElementById("continentBack").onclick=()=>show("qualification");
 
 const confederations=[
- {name:"Africa",emoji:"🌍",route:"54 FIFA members • 9 groups of 6. The nine group winners qualify directly; the four best runners-up enter a single-leg semi-final and final, with the winner going to the FIFA Play-Off Tournament."},
- {name:"Asia",emoji:"🌏",route:"46 FIFA members • preliminary two-legged play-offs for 20 teams, then 9 groups of 4. The 18 teams reaching the final round form 3 groups of 6; group winners and runners-up qualify directly. Third/fourth-placed teams enter further play-offs, with one team ultimately reaching the FIFA Play-Off Tournament."},
- {name:"Europe",emoji:"🇪🇺",route:"55 UEFA members • 12 qualifying groups of 4 or 5. The 12 group winners qualify directly. The 12 runners-up plus 4 eligible UEFA Nations League teams enter four four-team play-off paths; each path has a single-leg semi-final and final, producing the final 4 qualifiers."},
- {name:"North America",emoji:"🌎",route:"35 FIFA members • adjusted 2026-style Concacaf route with Canada, Mexico and the United States included in the qualifying competition rather than receiving automatic places. The route will be adapted to keep the draw balanced while retaining the 2026 three-stage structure: preliminary round, group round and final round."},
- {name:"Oceania",emoji:"🌊",route:"11 FIFA members • the four lowest-ranked teams begin in a preliminary knockout stage. The winner joins seven higher-ranked teams in two groups of four. The four group qualifiers enter a semi-final/final knockout; the winner qualifies directly and the runner-up goes to the FIFA Play-Off Tournament."},
- {name:"South America",emoji:"🌎",route:"10 FIFA members • one 10-team home-and-away league. The top six qualify directly and seventh place enters the FIFA Play-Off Tournament."}
+ {name:"Africa",emoji:"🌍",route:"54 FIFA members • 9 groups of 6. The nine group winners qualify directly; the four best runners-up enter the African play-off."},
+ {name:"Asia",emoji:"🌏",route:"46 FIFA members • preliminary rounds, group stages and a final qualifying round leading to direct qualification and a play-off route."},
+ {name:"Europe",emoji:"🇪🇺",route:"55 UEFA members • 12 qualifying groups. Group winners qualify directly; runners-up and eligible Nations League teams enter four play-off paths."},
+ {name:"North America",emoji:"🌎",route:"Adjusted Concacaf route • Canada, Mexico and the United States are included in the qualifying competition for this simulator."},
+ {name:"Oceania",emoji:"🌊",route:"11 FIFA members • preliminary knockout, group stage and final knockout route, with a FIFA Play-Off Tournament place."},
+ {name:"South America",emoji:"🌎",route:"10 FIFA members • one home-and-away league. The top six qualify directly and seventh enters the FIFA Play-Off Tournament."}
 ];
 
+const teamsByConfederation={
+ Africa:[
+  ["Group A",["Morocco","Gabon","Ivory Coast","Kenya","Gambia","Seychelles"]],
+  ["Group B",["Senegal","Togo","Sudan","DR Congo","South Sudan","Mauritania"]],
+  ["Group C",["Egypt","Burkina Faso","Sierra Leone","Ethiopia","Guinea-Bissau","Djibouti"]],
+  ["Group D",["Cameroon","Cape Verde","Libya","Angola","Eswatini","Mauritius"]],
+  ["Group E",["Algeria","Guinea","Uganda","Mozambique","Botswana","Somalia"]],
+  ["Group F",["Ghana","Madagascar","Central African Republic","Comoros","Chad","Mali"]],
+  ["Group G",["Nigeria","Benin","Zimbabwe","Rwanda","Lesotho","South Africa"]],
+  ["Group H",["Tunisia","Equatorial Guinea","Namibia","Liberia","Malawi","São Tomé and Príncipe"]],
+  ["Group I",["Zambia","Tanzania","Niger","Congo","Eritrea","Rwanda"]]
+ ],
+ Asia:[
+  ["Group A",["Japan","Australia","Saudi Arabia","Bahrain"]],
+  ["Group B",["South Korea","Iraq","Jordan","Oman"]],
+  ["Group C",["Iran","Qatar","Uzbekistan","Kyrgyzstan"]]
+ ],
+ Europe:[
+  ["Group A",["Germany","Switzerland","Serbia","Finland"]],
+  ["Group B",["France","Ukraine","Poland","Albania"]],
+  ["Group C",["Spain","Croatia","Norway","Georgia"]]
+ ],
+ "North America":[
+  ["Group A",["United States","Mexico","Canada","Costa Rica"]],
+  ["Group B",["Panama","Jamaica","Honduras","Trinidad and Tobago"]],
+  ["Group C",["Guatemala","Haiti","El Salvador","Curaçao"]]
+ ],
+ Oceania:[
+  ["Group A",["New Zealand","New Caledonia","Fiji","Vanuatu"]],
+  ["Group B",["Solomon Islands","Tahiti","Papua New Guinea","Samoa"]]
+ ],
+ "South America":[
+  ["League",["Argentina","Brazil","Uruguay","Colombia","Ecuador","Paraguay","Chile","Bolivia","Peru","Venezuela"]]
+ ]
+};
+
 let continentIndex=0;
+let groupIndex=0;
+let state=[];
 
-function renderOrder(){
- const order=document.getElementById("order");
- order.innerHTML=confederations.map((c,i)=>`<span class="${i===continentIndex?"active":""}">${i+1}. ${c.name}</span>`).join("");
-}
-
-function renderContinent(){
- const c=confederations[continentIndex];
- document.getElementById("continentTitle").textContent=c.name;
- document.getElementById("drawHeading").textContent=c.emoji+" "+c.name+" Qualifying Draw";
- document.getElementById("continentIntro").textContent=continentIndex===0
-  ?"Qualification begins with Africa, following the requested alphabetical confederation order."
-  :"This confederation follows the standardised 2026-style qualifying route.";
- document.getElementById("route").innerHTML=`<div class="route"><strong>2026-style qualifying route</strong><p>${c.route}</p></div>`;
- renderOrder();
- const next=confederations[continentIndex+1];
- const btn=document.getElementById("continueContinent");
- if(next){
-   btn.classList.remove("hidden");
-   document.getElementById("nextLabel").textContent=next.emoji+" "+next.name;
- }else{
-   btn.classList.add("hidden");
- }
-}
-
-document.getElementById("qualYes").onclick=()=>{
- continentIndex=0;
- renderContinent();
- show("continent");
- document.getElementById("qualNotice").classList.add("hidden");
-};
-
-document.getElementById("qualNo").onclick=()=>{
- const n=document.getElementById("qualNotice");
- n.textContent="Custom qualification selected. The custom route builder will let you design each confederation independently.";
- n.classList.remove("hidden");
-};
-
-
-
-const currentGroup = document.getElementById("currentGroup");
-const simulateButton = document.getElementById("simulateButton");
-const resultsButton = document.getElementById("resultsButton");
-const resultsPanel = document.getElementById("resultsPanel");
-const closeResults = document.getElementById("closeResults");
-const resultsList = document.getElementById("resultsList");
-const standingsBody = document.getElementById("standingsBody");
-const matchLog = document.getElementById("matchLog");
-const simStatus = document.getElementById("simStatus");
-
-const teamsByConfederation = {
-  "Africa": [
-    ["Group A", ["Morocco","Gabon","Ivory Coast","Kenya","Gambia","Seychelles"]],
-    ["Group B", ["Senegal","Togo","Sudan","DR Congo","South Sudan","Mauritania"]],
-    ["Group C", ["Egypt","Burkina Faso","Sierra Leone","Ethiopia","Guinea-Bissau","Djibouti"]],
-    ["Group D", ["Cameroon","Cape Verde","Libya","Angola","Eswatini","Mauritius"]],
-    ["Group E", ["Algeria","Guinea","Uganda","Mozambique","Botswana","Somalia"]],
-    ["Group F", ["Ghana","Madagascar","Central African Republic","Comoros","Chad","Mali"]],
-    ["Group G", ["Nigeria","Benin","Zimbabwe","Rwanda","Lesotho","South Africa"]],
-    ["Group H", ["Tunisia","Equatorial Guinea","Namibia","Liberia","Malawi","São Tomé and Príncipe"]],
-    ["Group I", ["DR Congo","Zambia","Tanzania","Niger","Congo","Eritrea"]]
-  ],
-  "Asia": [
-    ["Group A", ["Japan","Australia","Saudi Arabia","Bahrain"]],
-    ["Group B", ["South Korea","Iraq","Jordan","Oman"]],
-    ["Group C", ["Iran","Qatar","Uzbekistan","Kyrgyzstan"]]
-  ],
-  "Europe": [
-    ["Group A", ["Germany","Switzerland","Serbia","Finland"]],
-    ["Group B", ["France","Ukraine","Poland","Albania"]],
-    ["Group C", ["Spain","Croatia","Norway","Georgia"]]
-  ],
-  "North America": [
-    ["Group A", ["United States","Mexico","Canada","Costa Rica"]],
-    ["Group B", ["Panama","Jamaica","Honduras","Trinidad and Tobago"]],
-    ["Group C", ["Guatemala","Haiti","El Salvador","Curaçao"]]
-  ],
-  "Oceania": [
-    ["Group A", ["New Zealand","New Caledonia","Fiji","Vanuatu"]],
-    ["Group B", ["Solomon Islands","Tahiti","Papua New Guinea","Samoa"]]
-  ],
-  "South America": [
-    ["League", ["Argentina","Brazil","Uruguay","Colombia","Ecuador","Paraguay","Chile","Bolivia","Peru","Venezuela"]]
-  ]
-};
-
-let simState = {};
-let simGroupIndex = 0;
-
-function getGroupsForCurrentConfederation(){
-  return teamsByConfederation[confederations[continentIndex].name] || [];
-}
-
-function resetSimulation(){
-  const groups = getGroupsForCurrentConfederation();
-  simGroupIndex = 0;
-  simState = {};
-
-  groups.forEach((g, i)=>{
-    const teams = g[1].map(name=>({name, p:0,w:0,d:0,l:0,pts:0,gf:0,ga:0}));
-    const matches = [];
+function buildState(){
+  const groups=teamsByConfederation[confederations[continentIndex].name] || [];
+  state=groups.map(g=>{
+    const teams=g[1].map(name=>({name,p:0,w:0,d:0,l:0,pts:0,gf:0,ga:0}));
+    const matches=[];
     for(let a=0;a<teams.length;a++){
       for(let b=a+1;b<teams.length;b++) matches.push([a,b]);
     }
-    simState[i] = {teams, matches, cursor:0, played:[]};
+    return {name:g[0],teams,matches,cursor:0,results:[]};
   });
-
-  resultsPanel.hidden = true;
-  renderStandings();
+  groupIndex=0;
 }
 
-function currentState(){
-  return simState[simGroupIndex];
-}
+function renderContinent(){
+  const c=confederations[continentIndex];
+  document.getElementById("continentTitle").textContent=c.name;
+  document.getElementById("drawHeading").textContent=c.emoji+" "+c.name+" Qualifying Draw";
+  document.getElementById("continentIntro").textContent=continentIndex===0
+    ?"Africa is first. The draw and simulation then move through the confederations in alphabetical order."
+    :"This is the next confederation in the alphabetical qualifying order.";
+  document.getElementById("route").innerHTML='<strong>Qualifying route</strong><p>'+c.route+'</p>';
 
-function renderResults(){
-  const groups = getGroupsForCurrentConfederation();
-  const state = currentState();
-  if(!state) return;
+  document.getElementById("order").innerHTML=confederations.map((x,i)=>
+    '<span class="'+(i===continentIndex?"active":"")+'">'+(i+1)+'. '+x.name+'</span>'
+  ).join("");
 
-  resultsList.innerHTML = state.played.length
-    ? `<div style="margin-bottom:10px;color:var(--viz-muted);font-size:13px">${groups[simGroupIndex][0]}</div>` +
-      state.played.map(m=>`<div class="match"><span>${m.home} ${m.hg}–${m.ag} ${m.away}</span></div>`).join("")
-    : `<div class="match">No matches simulated yet.</div>`;
-}
-
-function renderStandings(){
-  const groups = getGroupsForCurrentConfederation();
-  const state = currentState();
-
-  if(!state){
-    currentGroup.textContent = "Complete";
-    simulateButton.disabled = true;
-    resultsButton.disabled = true;
-    simStatus.textContent = "All groups complete.";
-    standingsBody.innerHTML = "";
-    matchLog.innerHTML = "";
-    return;
+  const next=confederations[continentIndex+1];
+  const nextButton=document.getElementById("continueContinent");
+  if(next){
+    nextButton.classList.remove("hidden");
+    document.getElementById("nextLabel").textContent=next.emoji+" "+next.name;
+  }else{
+    nextButton.classList.add("hidden");
   }
 
-  currentGroup.textContent = groups[simGroupIndex][0];
+  buildState();
+  renderGroup();
+}
 
-  const sorted = [...state.teams].sort((a,b)=>
+function renderGroup(){
+  const current=state[groupIndex];
+  if(!current)return;
+
+  document.getElementById("currentGroup").textContent=current.name;
+  const sorted=[...current.teams].sort((a,b)=>
     b.pts-a.pts ||
-    (b.gf-b.ga)-(a.gf-a.ga) ||
+    ((b.gf-b.ga)-(a.gf-a.ga)) ||
     b.gf-a.gf ||
     a.name.localeCompare(b.name)
   );
 
-  standingsBody.innerHTML = sorted.map(t=>
-    `<tr><td>${t.name}</td><td>${t.p}</td><td>${t.w}</td><td>${t.d}</td><td>${t.l}</td><td><strong>${t.pts}</strong></td></tr>`
+  document.getElementById("standingsBody").innerHTML=sorted.map(t=>
+    '<tr><td>'+t.name+'</td><td>'+t.p+'</td><td>'+t.w+'</td><td>'+t.d+'</td><td>'+t.l+'</td><td><strong>'+t.pts+'</strong></td></tr>'
   ).join("");
 
-  matchLog.innerHTML = state.played.slice().reverse().map(m=>
-    `<div class="match"><span>${m.home} ${m.hg}–${m.ag} ${m.away}</span></div>`
-  ).join("");
+  const complete=current.cursor>=current.matches.length;
+  const nextGroup=state[groupIndex+1];
 
-  const finished = state.cursor >= state.matches.length;
-  simulateButton.disabled = false;
-  resultsButton.disabled = state.played.length === 0;
+  document.getElementById("simStatus").textContent=complete
+    ? (nextGroup ? current.name+" complete. Press Simulate to start "+nextGroup.name+"." : "All groups complete.")
+    : (current.matches.length-current.cursor)+" matches remaining in "+current.name+".";
 
-  simStatus.textContent = finished
-    ? (simGroupIndex < groups.length-1
-        ? `${groups[simGroupIndex][0]} complete. Press Simulate to begin ${groups[simGroupIndex+1][0]}.`
-        : "All groups in this confederation are complete.")
-    : `${state.matches.length-state.cursor} matches remaining in ${groups[simGroupIndex][0]}.`;
+  document.getElementById("simulateButton").textContent=complete && nextGroup ? "Simulate "+nextGroup.name : "Simulate";
+  document.getElementById("resultsButton").disabled=current.results.length===0;
 
-  renderResults();
+  document.getElementById("resultsBox").classList.add("hidden");
 }
 
-function playMatch(){
-  const state = currentState();
-  if(!state || state.cursor>=state.matches.length) return;
+function simulateOne(){
+  let current=state[groupIndex];
 
-  const [hi,ai] = state.matches[state.cursor++];
-  const home = state.teams[hi], away = state.teams[ai];
-
-  const seed = state.cursor*17 + hi*11 + ai*7 + home.name.length + away.name.length;
-  const hg = seed % 4;
-  const ag = (seed*3 + 1) % 4;
-
-  home.p++; away.p++;
-  home.gf += hg; home.ga += ag;
-  away.gf += ag; away.ga += hg;
-
-  if(hg>ag){ home.w++; home.pts+=3; away.l++; }
-  else if(hg<ag){ away.w++; away.pts+=3; home.l++; }
-  else { home.d++; away.d++; home.pts++; away.pts++; }
-
-  state.played.push({home:home.name,away:away.name,hg,ag});
-  renderStandings();
-}
-
-function advanceToNextGroup(){
-  const groups = getGroupsForCurrentConfederation();
-  const state = currentState();
-
-  if(!state || state.cursor < state.matches.length) return;
-
-  if(simGroupIndex < groups.length-1){
-    simGroupIndex++;
-    resultsPanel.hidden = true;
-    renderStandings();
+  if(current.cursor>=current.matches.length){
+    if(groupIndex<state.length-1){
+      groupIndex++;
+      renderGroup();
+      current=state[groupIndex];
+    }else{
+      document.getElementById("simStatus").textContent="All groups in this confederation are complete.";
+      return;
+    }
   }
+
+  const [hi,ai]=current.matches[current.cursor++];
+  const home=current.teams[hi], away=current.teams[ai];
+  const seed=current.cursor*19+hi*13+ai*7+home.name.length+away.name.length;
+  const hg=seed%4;
+  const ag=(seed*3+1)%4;
+
+  home.p++;away.p++;
+  home.gf+=hg;home.ga+=ag;
+  away.gf+=ag;away.ga+=hg;
+
+  if(hg>ag){home.w++;home.pts+=3;away.l++}
+  else if(hg<ag){away.w++;away.pts+=3;home.l++}
+  else{home.d++;away.d++;home.pts++;away.pts++}
+
+  current.results.push({home:home.name,away:away.name,hg,ag});
+  renderGroup();
 }
 
-simulateButton.addEventListener("click", ()=>{
-  const state = currentState();
-  if(state && state.cursor >= state.matches.length){
-    advanceToNextGroup();
-  }else{
-    playMatch();
-  }
-});
+function showResults(){
+  const current=state[groupIndex];
+  const box=document.getElementById("resultsBox");
+  const list=document.getElementById("resultsList");
 
-resultsButton.addEventListener("click", ()=>{
-  renderResults();
-  resultsPanel.hidden = false;
-});
+  list.innerHTML=current.results.length
+    ? current.results.map(r=>'<div class="resultsRow">'+r.home+' '+r.hg+'–'+r.ag+' '+r.away+'</div>').join("")
+    : '<div class="resultsRow">No results yet.</div>';
 
-closeResults.addEventListener("click", ()=>{
-  resultsPanel.hidden = true;
-});
+  box.classList.remove("hidden");
+}
 
-const originalRenderContinent = renderContinent;
-renderContinent = function(){
-  originalRenderContinent();
-  resetSimulation();
+document.getElementById("qualYes").onclick=()=>{
+  continentIndex=0;
+  document.getElementById("qualNotice").classList.add("hidden");
+  show("continent");
+  renderContinent();
+};
+
+document.getElementById("qualNo").onclick=()=>{
+  const n=document.getElementById("qualNotice");
+  n.textContent="Custom qualification selected. We will build the independent confederation route builder next.";
+  n.classList.remove("hidden");
+};
+
+document.getElementById("simulateButton").onclick=simulateOne;
+document.getElementById("resultsButton").onclick=showResults;
+document.getElementById("closeResults").onclick=()=>{
+  document.getElementById("resultsBox").classList.add("hidden");
 };
 
 document.getElementById("continueContinent").onclick=()=>{
-  const state = currentState();
-  const groups = getGroupsForCurrentConfederation();
-
-  if(state && state.cursor < state.matches.length){
-    simStatus.textContent = `Finish ${groups[simGroupIndex][0]} before moving on.`;
+  const current=state[groupIndex];
+  if(!current || current.cursor<current.matches.length){
+    document.getElementById("simStatus").textContent="Finish all matches in "+current.name+" before moving to the next confederation.";
     return;
   }
 
-  if(simGroupIndex < groups.length-1){
-    advanceToNextGroup();
+  if(groupIndex<state.length-1){
+    document.getElementById("simStatus").textContent="Finish the remaining groups before moving to the next confederation.";
     return;
   }
 
-  if(continentIndex < confederations.length-1){
+  if(continentIndex<confederations.length-1){
     continentIndex++;
     renderContinent();
   }
 };
-
-document.getElementById("continentBack").onclick=()=>show("qualification");
 </script>
 </body>
 </html>
