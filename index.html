@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>International Football Simulator</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;
+  background:#071426;
+  color:#fff;
+}
+
+.screen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:28px;
+}
+
+.hidden{display:none!important}
+
+.loading{
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 15% 15%,#1264d6 0,transparent 32%),
+    radial-gradient(circle at 85% 20%,#21c7d9 0,transparent 28%),
+    radial-gradient(circle at 50% 100%,#16865d 0,transparent 35%),
+    #071426;
+}
+
+.content{
+  width:min(680px,100%);
+}
+
+.logo{
+  width:110px;
+  height:110px;
+  margin:0 auto 28px;
+  border-radius:32px;
+  display:grid;
+  place-items:center;
+  font-size:52px;
+  background:linear-gradient(145deg,#21c7d9,#1264d6 55%,#123b8f);
+  box-shadow:0 18px 45px #0007;
+}
+
+h1{
+  font-size:clamp(28px,7vw,48px);
+  margin:0 0 10px;
+  letter-spacing:-1.5px;
+}
+
+.subtitle{
+  color:#a9bdd4;
+  font-size:16px;
+}
+
+.progress{
+  height:8px;
+  max-width:360px;
+  margin:28px auto 14px;
+  background:#ffffff22;
+  border-radius:20px;
+  overflow:hidden;
+}
+
+.progressBar{
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,#21c7d9,#25c47a);
+  transition:width .25s;
+}
+
+.start{
+  margin-top:22px;
+  padding:15px 48px;
+  border:0;
+  border-radius:16px;
+  background:#fff;
+  color:#071426;
+  font-size:17px;
+  font-weight:750;
+  cursor:pointer;
+}
+
+.start:disabled{
+  opacity:0;
+  pointer-events:none;
+}
+
+.hub,.format{
+  align-items:flex-start;
+  background:linear-gradient(180deg,#08182d,#071426);
+}
+
+.hub .content,.format .content{
+  padding-top:7vh;
+}
+
+.eyebrow{
+  color:#21c7d9;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+}
+
+h2{
+  font-size:clamp(30px,6vw,44px);
+  margin:8px 0;
+}
+
+.description{
+  color:#a9bdd4;
+  line-height:1.5;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:16px;
+  margin-top:30px;
+}
+
+.choice{
+  min-height:170px;
+  border:1px solid #ffffff18;
+  border-radius:24px;
+  background:linear-gradient(145deg,#122945,#0d1d32);
+  color:#fff;
+  padding:24px;
+  text-align:left;
+  cursor:pointer;
+  transition:.15s;
+}
+
+.choice:hover{
+  border-color:#21c7d980;
+  transform:translateY(-2px);
+}
+
+.icon{
+  font-size:34px;
+}
+
+.title{
+  font-size:21px;
+  font-weight:750;
+  margin-top:18px;
+}
+
+.desc{
+  color:#a9bdd4;
+  font-size:14px;
+  margin-top:7px;
+  line-height:1.45;
+}
+
+.formatOption{
+  display:block;
+  width:100%;
+  margin-top:14px;
+  padding:20px;
+  border:1px solid #ffffff18;
+  border-radius:20px;
+  background:#10223b;
+  color:#fff;
+  text-align:left;
+  cursor:pointer;
+}
+
+.formatOption:hover{
+  border-color:#21c7d980;
+}
+
+.formatTitle{
+  font-size:18px;
+  font-weight:700;
+}
+
+.formatDesc{
+  color:#a9bdd4;
+  margin-top:5px;
+  font-size:14px;
+}
+
+.back{
+  margin-top:24px;
+  padding:11px 18px;
+  border:1px solid #ffffff22;
+  border-radius:12px;
+  background:transparent;
+  color:#fff;
+  cursor:pointer;
+}
+
+.notice{
+  margin-top:20px;
+  padding:14px 16px;
+  border-radius:16px;
+  background:#21c7d912;
+  border:1px solid #21c7d933;
+  color:#a9bdd4;
+}
+
+@media(max-width:600px){
+  .grid{grid-template-columns:1fr}
+  .choice{min-height:130px}
+  .hub .content,.format .content{padding-top:4vh}
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOADING SCREEN -->
+<section id="loading" class="screen loading">
+  <div class="content">
+
+    <div class="logo">⚽</div>
+
+    <h1>International Football Simulator</h1>
+
+    <p id="status" class="subtitle">
+      Preparing the football world…
+    </p>
+
+    <div class="progress">
+      <div id="progressBar" class="progressBar"></div>
+    </div>
+
+    <button id="startButton" class="start" disabled>
+      Start
+    </button>
+
+  </div>
+</section>
+
+
+<!-- TOURNAMENT HUB -->
+<section id="hub" class="screen hub hidden">
+  <div class="content">
+
+    <div class="eyebrow">Create a tournament</div>
+
+    <h2>What do you want to play?</h2>
+
+    <p class="description">
+      Choose the type of international competition you want to create.
+    </p>
+
+    <div class="grid">
+
+      <button class="choice" id="worldCup">
+        <div class="icon">🏆</div>
+        <div class="title">World Cup</div>
+        <div class="desc">
+          Create a World Cup and configure its qualification system.
+        </div>
+      </button>
+
+      <button class="choice">
+        <div class="icon">🌍</div>
+        <div class="title">Continental</div>
+        <div class="desc">
+          Create a continental international competition.
+        </div>
+      </button>
+
+      <button class="choice">
+        <div class="icon">📊</div>
+        <div class="title">Leagues</div>
+        <div class="desc">
+          Create a league competition.
+        </div>
+      </button>
+
+      <button class="choice">
+        <div class="icon">⚔️</div>
+        <div class="title">Single Elimination</div>
+        <div class="desc">
+          Create a knockout tournament.
+        </div>
+      </button>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- WORLD CUP FORMAT -->
+<section id="format" class="screen format hidden">
+  <div class="content">
+
+    <div class="eyebrow">World Cup</div>
+
+    <h2>Choose the format</h2>
+
+    <p class="description">
+      Decide how you want your World Cup to be structured.
+    </p>
+
+    <button class="formatOption">
+      <div class="formatTitle">Standard Format</div>
+      <div class="formatDesc">
+        Start with a predefined World Cup structure.
+      </div>
+    </button>
+
+    <button class="formatOption">
+      <div class="formatTitle">Custom Format</div>
+      <div class="formatDesc">
+        Build the number of teams, groups and knockout stages yourself.
+      </div>
+    </button>
+
+    <button class="formatOption">
+      <div class="formatTitle">Custom + Qualification</div>
+      <div class="formatDesc">
+        Build the World Cup and create completely independent
+        qualification routes for each confederation.
+      </div>
+    </button>
+
+    <div id="formatNotice" class="notice hidden"></div>
+
+    <button id="backButton" class="back">
+      ← Back
+    </button>
+
+  </div>
+</section>
+
+
+<script>
+
+const loading = document.getElementById("loading");
+const hub = document.getElementById("hub");
+const format = document.getElementById("format");
+
+const progressBar = document.getElementById("progressBar");
+const status = document.getElementById("status");
+const startButton = document.getElementById("startButton");
+
+let progress = 0;
+
+const loadingMessages = [
+  "Preparing the football world…",
+  "Loading countries and flags…",
+  "Loading confederations…",
+  "Preparing tournament engine…",
+  "Ready to start."
+];
+
+const timer = setInterval(function(){
+
+  progress += 20;
+
+  progressBar.style.width = progress + "%";
+
+  status.textContent =
+    loadingMessages[Math.min(progress / 20,4)];
+
+  if(progress >= 100){
+
+    clearInterval(timer);
+
+    startButton.disabled = false;
+
+  }
+
+},350);
+
+
+/* START */
+
+startButton.addEventListener("click",function(){
+
+  loading.classList.add("hidden");
+
+  hub.classList.remove("hidden");
+
+});
+
+
+/* WORLD CUP */
+
+document.getElementById("worldCup").addEventListener("click",function(){
+
+  hub.classList.add("hidden");
+
+  format.classList.remove("hidden");
+
+});
+
+
+/* BACK */
+
+document.getElementById("backButton").addEventListener("click",function(){
+
+  format.classList.add("hidden");
+
+  hub.classList.remove("hidden");
+
+});
+
+
+/* FORMAT OPTIONS */
+
+document.querySelectorAll(".formatOption").forEach(function(button){
+
+  button.addEventListener("click",function(){
+
+    const title =
+      button.querySelector(".formatTitle").textContent;
+
+    const notice =
+      document.getElementById("formatNotice");
+
+    notice.textContent =
+      title + " selected. This is where we will build the next setup screen.";
+
+    notice.classList.remove("hidden");
+
+  });
+
+});
+
+</script>
+
+</body>
+</html>
